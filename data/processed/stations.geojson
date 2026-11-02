@@ -3,8 +3,9 @@
 "name": "stations",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
-{ "type": "Feature", "properties": { "osm_id": 94891390, "railway": "station", "station": "subway" }, "geometry": { "type": "Point", "coordinates": [ 30.4152087, 59.9295952 ] } },
-{ "type": "Feature", "properties": { "osm_id": 94896142, "railway": "station", "station": "subway" }, "geometry": { "type": "Point", "coordinates": [ 30.4424369, 59.9315257 ] } },
-{ "type": "Feature", "properties": { "osm_id": 265301052, "railway": "station", "station": null }, "geometry": { "type": "Point", "coordinates": [ 30.4404379, 59.9306741 ] } }
+{ "type": "Feature", "properties": { "osm_id": 94891390, "railway": "station", "station": "subway", "name": "Новочеркасская" }, "geometry": { "type": "Point", "coordinates": [ 30.4152087, 59.9295952 ] } },
+{ "type": "Feature", "properties": { "osm_id": 94896142, "railway": "station", "station": "subway", "name": "Ладожская" }, "geometry": { "type": "Point", "coordinates": [ 30.4424369, 59.9315257 ] } },
+{ "type": "Feature", "properties": { "osm_id": 265301052, "railway": "station", "station": "", "name": "Санкт-Петербург-Ладожский" }, "geometry": { "type": "Point", "coordinates": [ 30.4404379, 59.9306741 ] } },
+{ "type": "Feature", "properties": { "osm_id": 10591654719, "railway": "station", "station": "", "name": "Полюстрово" }, "geometry": { "type": "Point", "coordinates": [ 30.4458547, 59.9643605 ] } }
 ]
 }
