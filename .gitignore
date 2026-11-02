@@ -22,3 +22,4 @@ data-69-structure-16.json*
 .venv/
 *.pbf
 node_modules/
+presentations/*.pptx
