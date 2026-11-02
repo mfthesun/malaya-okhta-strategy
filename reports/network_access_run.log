@@ -1,0 +1,26 @@
+2026-11-03 00:51:25.147 | WARNING  | iduedu.overpass.downloaders:_overpass_request:161 - Network exception HTTPSConnectionPool(host='overpass-api.de', port=443): Read timed out., retrying in 1.0 (attempt 1/5)
+2026-11-03 00:52:06.253 | WARNING  | iduedu.overpass.downloaders:_overpass_request:198 - HTTP 502: retrying in 2.0s (attempt 2/5)
+2026-11-03 00:52:38.857 | WARNING  | iduedu.overpass.downloaders:_overpass_request:198 - HTTP 502: retrying in 4.0s (attempt 3/5)
+2026-11-03 00:56:04.557 | WARNING  | iduedu.overpass.downloaders:_overpass_request:161 - Network exception HTTPSConnectionPool(host='overpass-api.de', port=443): Read timed out., retrying in 8.0 (attempt 4/5)
+2026-11-03 00:59:32.457 | WARNING  | iduedu.overpass.downloaders:_overpass_request:161 - Network exception HTTPSConnectionPool(host='overpass-api.de', port=443): Read timed out., retrying in 16.0 (attempt 5/5)
+жилых зданий в v3: 1070
+строим пешеходный граф по территории v3 (Overpass)...
+Traceback (most recent call last):
+  File "/home/mfthesun/Projects/malaya-okhta-strategy/scripts/network_access.py", line 110, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/mfthesun/Projects/malaya-okhta-strategy/scripts/network_access.py", line 56, in main
+    g_walk = get_walk_graph(territory=v3, keep_largest_subgraph=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mfthesun/Projects/malaya-okhta-strategy/.venv-objectnat/lib/python3.12/site-packages/iduedu/graph_builders/drive_walk_builders.py", line 395, in get_walk_graph
+    edges_gdf = _build_edges_from_overpass(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mfthesun/Projects/malaya-okhta-strategy/.venv-objectnat/lib/python3.12/site-packages/iduedu/graph_builders/drive_walk_builders.py", line 125, in _build_edges_from_overpass
+    data = get_network_by_filters(polygon, way_filter)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mfthesun/Projects/malaya-okhta-strategy/.venv-objectnat/lib/python3.12/site-packages/iduedu/overpass/downloaders.py", line 417, in get_network_by_filters
+    resp = _overpass_request(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/mfthesun/Projects/malaya-okhta-strategy/.venv-objectnat/lib/python3.12/site-packages/iduedu/overpass/downloaders.py", line 204, in _overpass_request
+    raise RequestError(
+iduedu.overpass.downloaders.RequestError: Request failed with status code 502, reason: Bad Gateway (status: 502, reason: Bad Gateway).

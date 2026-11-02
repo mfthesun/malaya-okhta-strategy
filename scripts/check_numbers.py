@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 import pandas as pd
 import geopandas as gpd
+import json
 
 R = Path(__file__).resolve().parents[1]
 
@@ -30,6 +31,7 @@ versions = gpd.read_file(R / "data/processed/boundary_versions.geojson").set_ind
 building = gpd.read_file(R / "data/processed/building.geojson")
 okn = gpd.read_file(R / "data/processed/okn.geojson")
 ha = gpd.read_file(R / "data/processed/house_age.geojson")
+net = json.load(open(R / "data/processed/network_access.json", encoding="utf-8"))
 
 V2 = versions.loc["v2", "geometry"]
 V3 = versions.loc["v3", "geometry"]
@@ -103,6 +105,18 @@ CHECKS = [
     ("docs/strategy.md", "площадь ядра v1 (З1), км²", float(versions.loc["v1", "area_km2"]), 1.8, 0.01),
     ("presentations/slides.md", "школ в v3 (узлы+полигоны OSM)",
      int(gpd.read_file(R / "data/processed/services.geojson").amenity.eq("school").sum()), 31, 0),
+    # --- сетевой расчёт доступности (network_access_fallback.py) ---
+    ("docs/diagnostics.md", "сетевой охват школ 500 м, %", net["schools_share"], 45.6, 0.1),
+    ("docs/diagnostics.md", "сетевой охват детсадов 300 м, %", net["kindergartens_share"], 32.0, 0.1),
+    ("docs/diagnostics.md", "сетевой охват здоровья 500 м, %", net["health_share"], 56.6, 0.1),
+    ("docs/diagnostics.md", "сетевой охват аптек 300 м, %", net["pharmacies_share"], 35.4, 0.1),
+    ("docs/diagnostics.md", "жилых зданий в 800 м от метро по сети, %", net["metro_800_share"], 14.9, 0.1),
+    ("docs/diagnostics.md", "жилых зданий в 400 м от метро по сети, %", net["metro_400_share"], 2.5, 0.1),
+    ("presentations/slides.md", "школы 500 м по сети (округл.), %", round(net["schools_share"]), 46, 0),
+    ("presentations/slides.md", "детсады 300 м по сети (округл.), %", round(net["kindergartens_share"]), 32, 0),
+    ("presentations/slides.md", "здоровье 500 м по сети (округл.), %", round(net["health_share"]), 57, 0),
+    ("presentations/slides.md", "аптеки 300 м по сети (округл.), %", round(net["pharmacies_share"]), 35, 0),
+    ("presentations/slides.md", "метро 800 м по сети (округл.), %", round(net["metro_800_share"]), 15, 0),
 ]
 
 if "--control" in sys.argv:

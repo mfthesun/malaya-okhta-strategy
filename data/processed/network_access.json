@@ -1,0 +1,18 @@
+{
+ "living_total": 1070,
+ "method": "networkx из roads.geojson (UTM 36N)",
+ "schools_cutoff_m": 500,
+ "schools_objects": 31,
+ "schools_share": 45.6,
+ "kindergartens_cutoff_m": 300,
+ "kindergartens_objects": 48,
+ "kindergartens_share": 32.0,
+ "health_cutoff_m": 500,
+ "health_objects": 60,
+ "health_share": 56.6,
+ "pharmacies_cutoff_m": 300,
+ "pharmacies_objects": 79,
+ "pharmacies_share": 35.4,
+ "metro_400_share": 2.5,
+ "metro_800_share": 14.9
+}
