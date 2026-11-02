@@ -20,3 +20,4 @@ data-69-structure-16.json*
 ~$*
 *.backup-*
 .venv/
+*.pbf
