@@ -1,0 +1,10 @@
+# Пайплайн данных и карты (этапы 1–2, 4)
+geopandas
+pandas
+matplotlib
+contextily
+xyzservices
+pyproj
+shapely
+jupyterlab
+openpyxl

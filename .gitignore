@@ -1,0 +1,21 @@
+# Сгенерируемые данные и кэши
+data/raw/cache/
+data/raw/*.gpkg
+data/raw/*.parquet
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Карты-результаты (генерируются ноутбуком 04)
+notebooks/maps_out/
+*.png.tmp
+
+# Тяжёлые исходники (не класть в git без явного согласования, лимит ~10 МБ)
+HOITH_database_*.gpkg
+data-69-structure-16.json*
+*.zip
+*.7z
+
+# Офисные временные
+~$*
+*.backup-*
