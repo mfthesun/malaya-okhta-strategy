@@ -19,3 +19,4 @@ data-69-structure-16.json*
 # Офисные временные
 ~$*
 *.backup-*
+.venv/
