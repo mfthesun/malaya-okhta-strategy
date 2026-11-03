@@ -54,10 +54,13 @@ def _wrap(text, width):
     return "\n".join(textwrap.fill(line, width) for line in lines)
 
 
-def map_figure():
-    """Рисунок стандартного размера с полем карты на стандартном месте."""
+MAP_RECT_FULL = (0.005, 0.015, 0.99, 0.97)  # полнокадровое поле (легенда поверх карты)
+
+
+def map_figure(full=False):
+    """Рисунок стандартного размера; full=True — поле карты на весь кадр (легенда поверх)."""
     fig = plt.figure(figsize=FIG_SIZE)
-    ax = fig.add_axes(MAP_RECT)
+    ax = fig.add_axes(MAP_RECT_FULL if full else MAP_RECT)
     ax.set_axis_off()
     return fig, ax
 
@@ -65,7 +68,8 @@ def map_figure():
 def set_extent(ax, x0, y0, x1, y1):
     """Охват карты, расширенный до пропорций поля: масштаб по осям одинаковый."""
     fw, fh = ax.figure.get_size_inches()
-    box = (MAP_RECT[3] * fh) / (MAP_RECT[2] * fw)
+    rect = ax.get_position()
+    box = (rect.height * fh) / (rect.width * fw)
     w, h = x1 - x0, y1 - y0
     cx_, cy = (x0 + x1) / 2, (y0 + y1) / 2
     if h / w < box:
@@ -123,17 +127,39 @@ def basemap(ax, style="imagery", crs=32636, alpha=1.0):
 
 
 def finish(fig, ax, extent, handles, title="Условные обозначения", crs=32636, basemap_style="imagery",
-           basemap_alpha=1.0):
-    """Охват, подложка, рамка, указатель севера, линейка и легенда — на стандартных местах."""
+           basemap_alpha=1.0, legend_on_map=True):
+    """Охват, подложка, рамка, указатель севера, линейка и легенда.
+
+    legend_on_map=True: легенда внутри поля карты (правый верхний угол) на полупрозрачной
+    белой подложке — карта вставляется в слайд целиком, без белых полей вокруг.
+    legend_on_map=False: легенда справа за полем карты (на paper-подложке).
+    """
     set_extent(ax, *extent)
+    keep_xlim, keep_ylim = ax.get_xlim(), ax.get_ylim()  # basemap(reset_extent=True) расширяет охват до тайлов
     basemap(ax, basemap_style, crs, basemap_alpha)
+    ax.set_xlim(keep_xlim); ax.set_ylim(keep_ylim)
     ax.add_patch(Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=False, edgecolor=MUTED, lw=0.8, zorder=30))
-    north_arrow(ax, crs=crs)
-    scale_bar(ax)
     for hd in handles:
         hd.set_label(_wrap(hd.get_label(), LABEL_WRAP))
-    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=LEGEND_ANCHOR, frameon=False, fontsize=8,
-               title=_wrap(title, TITLE_WRAP), title_fontsize=9, alignment="left", labelspacing=0.7, handlelength=2.2)
+    if legend_on_map:
+        # легенда в правом верхнем углу поля карты; стрелка севера уезжает в левый верхний
+        north_arrow(ax, crs=crs, loc=(0.045, 0.875))
+        scale_bar(ax)
+        leg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.63, 0.96), frameon=False,
+                         fontsize=8, title=None, alignment="left", labelspacing=0.6, handlelength=1.8)
+        leg.set_zorder(40)
+        fig.canvas.draw()
+        bb = leg.get_window_extent()
+        inv = fig.transFigure.inverted()
+        (x0, y0), (x1, y1) = inv.transform([(bb.x0, bb.y0), (bb.x1, bb.y1)])
+        pad = 0.008
+        back = fig.add_artist(Rectangle((x0 - pad, y0 - pad), x1 - x0 + 2 * pad, y1 - y0 + 2 * pad,
+                             transform=fig.transFigure, facecolor=SURFACE, alpha=0.78, edgecolor="none",
+                             zorder=39))
+    else:
+        fig.legend(handles=handles, loc="upper left", bbox_to_anchor=LEGEND_ANCHOR, frameon=False, fontsize=8,
+                   title=_wrap(title, TITLE_WRAP), title_fontsize=9, alignment="left", labelspacing=0.7,
+                   handlelength=2.2)
 
 
 def no_yo(fig):
