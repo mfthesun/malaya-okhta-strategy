@@ -136,8 +136,8 @@ def main():
             PROC / f"isochrones_metro_{cutoff}.geojson", driver="GeoJSON")
         print(f"метро {cutoff} м: {share:.1f} % жилых зданий")
 
-    json.dump(results, open(PROC / "network_access.json", "w", encoding="utf-8"),
-              ensure_ascii=False, indent=1)
+    (PROC / "network_access.json").write_text(
+        json.dumps(results, ensure_ascii=False, indent=1), encoding="utf-8")
     print("итоги:", json.dumps(results, ensure_ascii=False))
     return 0
 
