@@ -113,8 +113,10 @@ CHECKS = [
      100 * known2.year.between(1946, 1991).mean(), 71.1, 0.1),
     ("docs/diagnostics.md", "доля домов v2 до 1917, %",
      100 * (known2.year < 1917).mean(), 4.8, 0.1),
-    ("docs/diagnostics.md", "доля домов v2 1960–1979 (из известного года), %",
-     100 * ((known2.year >= 1960) & (known2.year < 1980)).mean(), 50.2, 0.5),
+    ("docs/diagnostics.md", "доля домов v2 1961–1980 (из известного года), %",
+     100 * ((known2.year >= 1961) & (known2.year < 1981)).mean(), 41.0, 0.5),
+    ("docs/diagnostics.md", "доля домов v2 1946–1960 (из известного года), %",
+     100 * ((known2.year >= 1946) & (known2.year < 1961)).mean(), 25.3, 0.5),
     ("docs/diagnostics.md", "доля зелени в v2 (OSM), %", 43.0, 43, 0.5),
     # --- сервисы: таблица разд. 0 (узловые) и разд. 3 (с полигонами) ---
     ("docs/diagnostics.md", "узловых сервисов v1", int(services[services.geom_type == "Point"].within(V1).sum()), 30, 0),
