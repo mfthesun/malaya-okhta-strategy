@@ -1,0 +1,73 @@
+OK   [docs/diagnostics.md] население МО Малая Охта 01.01.2025, чел.: в данных 43319.000, в тексте 43319
+OK   [docs/diagnostics.md] население МО Малая Охта ВПН-2010, чел.: в данных 45946.000, в тексте 45946
+OK   [docs/diagnostics.md] убыль МО Малая Охта 2010→2025, %: в данных 5.718, в тексте 5.7
+OK   [docs/diagnostics.md] прирост МО Большая Охта 2010→2025, %: в данных 6.669, в тексте 6.7
+OK   [docs/diagnostics.md] прирост Красногвардейского района 2010→2025, %: в данных 9.274, в тексте 9.3
+OK   [docs/diagnostics.md] вся Охта (v3), чел.: в данных 101495.000, в тексте 101495
+OK   [docs/diagnostics.md] площадь v2, км²: в данных 5.255, в тексте 5.26
+OK   [docs/diagnostics.md] площадь v3, км²: в данных 11.059, в тексте 11.06
+OK   [docs/diagnostics.md] площадь v1, км²: в данных 1.801, в тексте 1.8
+OK   [docs/diagnostics.md] плотность v2, чел/км²: в данных 8242.661, в тексте 8243
+OK   [docs/diagnostics.md] жилая застройка в прибрежной полосе 300 м v3, %: в данных 4.854, в тексте 4.9
+OK   [docs/diagnostics.md] площадь прибрежной полосы 300 м в v3, км²: в данных 3.746, в тексте 3.75
+OK   [docs/diagnostics.md] доля жилфонда v2 с известным годом 1946–1991, %: в данных 71.130, в тексте 71.1
+OK   [docs/diagnostics.md] доля домов v2 до 1917, %: в данных 4.812, в тексте 4.8
+OK   [docs/diagnostics.md] доля домов v2 1960–1979 (из известного года), %: в данных 50.209, в тексте 50.2
+OK   [docs/diagnostics.md] доля зелени в v2 (OSM), %: в данных 43.000, в тексте 43
+OK   [docs/diagnostics.md] узловых сервисов v1: в данных 30.000, в тексте 30
+OK   [docs/diagnostics.md] узловых сервисов v2: в данных 95.000, в тексте 95
+OK   [docs/diagnostics.md] узловых сервисов v3: в данных 160.000, в тексте 160
+OK   [docs/diagnostics.md] узловых сервисов v4: в данных 159.000, в тексте 159
+OK   [docs/diagnostics.md] сервисов v3 с полигонами (160 узловых + 77): в данных 237.000, в тексте 237
+OK   [docs/diagnostics.md] жилое пятно v2, % территории v2: в данных 6.829, в тексте 6.8
+OK   [docs/numbers_check.md] промышленно-складские здания v2, % территории v2: в данных 0.501, в тексте 0.5
+OK   [docs/numbers_check.md] промзоны landuse=industrial в v2, % территории v2: в данных 4.059, в тексте 4.1
+OK   [docs/numbers_check.md] гаражи v2, % территории v2: в данных 0.189, в тексте 0.2
+OK   [docs/numbers_check.md] осевые линии Невы и Охты в v3, км: в данных 9.139, в тексте 9.1
+OK   [docs/diagnostics.md] ОКН в v3 (с Ниеншанцем), всего: в данных 60.000, в тексте 60
+OK   [docs/diagnostics.md] ОКН федерального значения в v3: в данных 17.000, в тексте 17
+OK   [docs/diagnostics.md] ОКН в v2: в данных 21.000, в тексте 21
+OK   [docs/diagnostics.md] ОКН в v1: в данных 16.000, в тексте 16
+OK   [docs/diagnostics.md] домов с известным годом в v3: в данных 1095.000, в тексте 1095
+OK   [docs/diagnostics.md] жилая застройка в v3, га: в данных 96.033, в тексте 96
+OK   [docs/diagnostics.md] зданий v2: в данных 694.000, в тексте 694
+OK   [docs/diagnostics.md] зданий v3: в данных 1674.000, в тексте 1674
+OK   [docs/strategy.md] площадь ядра v1 (З1), км²: в данных 1.801, в тексте 1.8
+OK   [presentations/slides.md] школ в v3 (узлы+полигоны OSM): в данных 31.000, в тексте 31
+OK   [docs/diagnostics.md] сетевой охват школ 500 м, %: в данных 45.600, в тексте 45.6
+OK   [docs/diagnostics.md] сетевой охват детсадов 300 м, %: в данных 32.000, в тексте 32.0
+OK   [docs/diagnostics.md] сетевой охват здоровья 500 м, %: в данных 56.600, в тексте 56.6
+OK   [docs/diagnostics.md] сетевой охват аптек 300 м, %: в данных 35.400, в тексте 35.4
+OK   [docs/diagnostics.md] жилых зданий в 800 м от метро по сети, %: в данных 14.900, в тексте 14.9
+OK   [docs/diagnostics.md] жилых зданий в 400 м от метро по сети, %: в данных 2.500, в тексте 2.5
+OK   [presentations/slides.md] школы 500 м по сети (округл.), %: в данных 46.000, в тексте 46
+OK   [presentations/slides.md] детсады 300 м по сети (округл.), %: в данных 32.000, в тексте 32
+OK   [presentations/slides.md] здоровье 500 м по сети (округл.), %: в данных 57.000, в тексте 57
+OK   [presentations/slides.md] аптеки 300 м по сети (округл.), %: в данных 35.000, в тексте 35
+OK   [presentations/slides.md] метро 800 м по сети (округл.), %: в данных 15.000, в тексте 15
+OK   [presentations/slides.md] сервисов v3 (узлы+полигоны) на слайде 06: в данных 237.000, в тексте 237
+OK   [presentations/slides.md] промздания v2 на слайде 06, % территории v2: в данных 0.501, в тексте 0.5
+OK   [presentations/slides.md] промзоны v2 на слайде 06, % территории v2: в данных 4.059, в тексте 4.1
+OK   [presentations/slides.md] жилое пятно v2 на слайде 06, % территории v2: в данных 6.829, в тексте 6.8
+OK   [presentations/slides.md] полоса 300 м v3 (слайды 01 и 07), км²: в данных 3.746, в тексте 3.75
+OK   [presentations/slides.md] фронт воды v3 по осям рек (слайд 13), км: в данных 9.139, в тексте 9.1
+
+ИТОГ: 53 из 53 совпали
+--control: exit 1 (ожидалось)
+OK    data/processed/boundary_versions.geojson: 4 объектов, CRS ок
+OK    data/processed/building.geojson: 3130 объектов, CRS ок
+OK    data/processed/coverage_health.geojson: 1 объектов, CRS ок
+OK    data/processed/coverage_kindergartens.geojson: 1 объектов, CRS ок
+OK    data/processed/coverage_pharmacies.geojson: 1 объектов, CRS ок
+OK    data/processed/coverage_schools.geojson: 1 объектов, CRS ок
+OK    data/processed/green.geojson: 1642 объектов, CRS ок
+OK    data/processed/house_age.geojson: 1596 объектов, CRS ок
+OK    data/processed/isochrones_metro_400.geojson: 1 объектов, CRS ок
+OK    data/processed/isochrones_metro_800.geojson: 1 объектов, CRS ок
+OK    data/processed/okn.geojson: 60 объектов, CRS ок
+OK    data/processed/roads.geojson: 11370 объектов, CRS ок
+OK    data/processed/services.geojson: 348 объектов, CRS ок
+OK    data/processed/stations.geojson: 4 объектов, CRS ок
+OK    data/processed/water.geojson: 8 объектов, CRS ок
+
+Итог: ошибок нет

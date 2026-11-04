@@ -24,3 +24,4 @@ data-69-structure-16.json*
 node_modules/
 presentations/*.pptx
 .venv-objectnat/
+.mimosa/

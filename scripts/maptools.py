@@ -38,6 +38,9 @@ TITLE_WRAP, LABEL_WRAP = 34, 34
 ATTR_LOC = (0.995, 0.006)
 # Подложки Esri только без подписей: надписи на картах — наши и на русском.
 BASEMAPS = {
+    # публичный CartoDB Positron без подписей, @2x — двойное разрешение тайлов
+    "positron": (xyz.Esri.WorldGrayCanvas,
+                 "© Esri, World Gray Canvas; источники: Esri, HERE, Garmin, FAO, NOAA, USGS"),
     "relief": (xyz.Esri.WorldShadedRelief, "© Esri, World Shaded Relief; источник: Esri"),
     "imagery": (xyz.Esri.WorldImagery, "© Esri, World Imagery; источники: Esri, i-cubed, USDA, USGS, AEX, GeoEye, "
                                        "Getmapping, Aerogrid, IGN, IGP, UPR-EGP и сообщество пользователей ГИС"),
@@ -54,19 +57,26 @@ def _wrap(text, width):
     return "\n".join(textwrap.fill(line, width) for line in lines)
 
 
-MAP_RECT_FULL = (0.005, 0.015, 0.99, 0.97)  # полнокадровое поле (легенда поверх карты)
+MAP_RECT_FULL = (0.0, 0.0, 1.0, 1.0)  # полнокадровое поле: изображение = карта без белых полей
 
 
 def map_figure(full=False):
-    """Рисунок стандартного размера; full=True — поле карты на весь кадр (легенда поверх)."""
+    """Рисунок стандартного размера; full=True — карта занимает весь кадр, легенда поверх."""
     fig = plt.figure(figsize=FIG_SIZE)
-    ax = fig.add_axes(MAP_RECT_FULL if full else MAP_RECT)
+    rect = MAP_RECT_FULL if full else MAP_RECT
+    ax = fig.add_axes(rect)
     ax.set_axis_off()
+    ax._maptools_rect = rect  # исходная рамка: geopandas-слои её искажают через aspect='equal'
     return fig, ax
 
 
 def set_extent(ax, x0, y0, x1, y1):
     """Охват карты, расширенный до пропорций поля: масштаб по осям одинаковый."""
+    # geopandas-слой ставит aspect='equal' и подгоняет рамку осей; вернуть исходную
+    # рамку и aspect до расчёта, иначе пропорция поля считается по искажённой рамке
+    if hasattr(ax, "_maptools_rect"):
+        ax.set_position(ax._maptools_rect)
+    ax.set_aspect("auto")
     fw, fh = ax.figure.get_size_inches()
     rect = ax.get_position()
     box = (rect.height * fh) / (rect.width * fw)
@@ -76,7 +86,6 @@ def set_extent(ax, x0, y0, x1, y1):
         h = w * box
     else:
         w = h / box
-    ax.set_aspect("auto")
     ax.set_xlim(cx_ - w / 2, cx_ + w / 2)
     ax.set_ylim(cy - h / 2, cy + h / 2)
 
@@ -101,52 +110,51 @@ def scale_bar(ax, loc=SCALE_LOC, frac=SCALE_FRAC, segments=4, fontsize=7.5):
 
 
 def north_arrow(ax, crs=32636, loc=NORTH_LOC, size=0.07, fontsize=10):
-    """Стрелка на истинный север с буквой «С»; повёрнута на сближение меридианов в центре карты."""
+    """Условный север: вертикальная стрелка с буквой «С» (без сближения меридианов)."""
     x0, x1 = ax.get_xlim()
     y0, y1 = ax.get_ylim()
-    cx_, cy = (x0 + x1) / 2, (y0 + y1) / 2
-    lon, lat = Transformer.from_crs(crs, 4326, always_xy=True).transform(cx_, cy)
-    nx, ny = Transformer.from_crs(4326, crs, always_xy=True).transform(lon, lat + 0.1)
-    ang = math.atan2(nx - cx_, ny - cy)
     w, h = x1 - x0, y1 - y0
     L = size * h
     bx, by = x0 + loc[0] * w, y0 + loc[1] * h
-    dx, dy = L * math.sin(ang), L * math.cos(ang)
-    ax.add_patch(FancyArrow(bx, by, dx, dy, width=L * 0.12, head_width=L * 0.42, head_length=L * 0.45,
+    ax.add_patch(FancyArrow(bx, by, 0, L, width=L * 0.12, head_width=L * 0.42, head_length=L * 0.45,
                             length_includes_head=True, color=INK, zorder=20, path_effects=HALO))
-    ax.text(bx + dx * 1.25, by + dy * 1.25, "С", ha="center", va="bottom", fontsize=fontsize, fontweight="bold",
+    ax.text(bx, by + L * 1.25, "С", ha="center", va="bottom", fontsize=fontsize, fontweight="bold",
             color=INK, path_effects=HALO, zorder=21)
 
 
-def basemap(ax, style="imagery", crs=32636, alpha=1.0):
-    """Подложка Esri под всеми слоями и её атрибуция в правом нижнем углу поля."""
+def basemap(ax, style="imagery", crs=32636, alpha=1.0, zoom=None):
+    """Подложка Esri под всеми слоями и её атрибуция в правом нижнем углу поля.
+
+    zoom=None — авто; принудительный зум выше авто даёт более чёткие тайлы.
+    """
     src, attribution = BASEMAPS[style]
-    cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10, reset_extent=True, alpha=alpha)
+    kw = {} if zoom is None else {"zoom": zoom}
+    cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10,
+                   reset_extent=True, alpha=alpha, **kw)
     ax.text(*ATTR_LOC, f"Подложка: {attribution}", transform=ax.transAxes, ha="right", va="bottom",
             fontsize=5.5, color=MUTED, path_effects=HALO, zorder=21, wrap=True)
 
 
 def finish(fig, ax, extent, handles, title="Условные обозначения", crs=32636, basemap_style="imagery",
-           basemap_alpha=1.0, legend_on_map=True):
-    """Охват, подложка, рамка, указатель севера, линейка и легенда.
+           basemap_alpha=1.0, legend_on_map=True, basemap_zoom=None):
+    """Охват, подложка, указатель севера, линейка и легенда.
 
-    legend_on_map=True: легенда внутри поля карты (правый верхний угол) на полупрозрачной
-    белой подложке — карта вставляется в слайд целиком, без белых полей вокруг.
+    legend_on_map=True: карта на весь кадр, легенда в правом НИЖНЕМ углу поля карты на
+    полупрозрачной белой подложке; стрелка севера в левом верхнем углу.
     legend_on_map=False: легенда справа за полем карты (на paper-подложке).
     """
     set_extent(ax, *extent)
     keep_xlim, keep_ylim = ax.get_xlim(), ax.get_ylim()  # basemap(reset_extent=True) расширяет охват до тайлов
-    basemap(ax, basemap_style, crs, basemap_alpha)
+    basemap(ax, basemap_style, crs, basemap_alpha, zoom=basemap_zoom)
     ax.set_xlim(keep_xlim); ax.set_ylim(keep_ylim)
-    ax.add_patch(Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=False, edgecolor=MUTED, lw=0.8, zorder=30))
     for hd in handles:
         hd.set_label(_wrap(hd.get_label(), LABEL_WRAP))
     if legend_on_map:
-        # легенда в правом верхнем углу поля карты; стрелка севера уезжает в левый верхний
         north_arrow(ax, crs=crs, loc=(0.045, 0.875))
         scale_bar(ax)
-        leg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.63, 0.96), frameon=False,
-                         fontsize=8, title=None, alignment="left", labelspacing=0.6, handlelength=1.8)
+        leg = fig.legend(handles=handles, loc="lower right", bbox_to_anchor=(0.992, 0.032), frameon=False,
+                         fontsize=8, title=_wrap(title, TITLE_WRAP), title_fontsize=9,
+                         alignment="left", labelspacing=0.55, handlelength=1.8)
         leg.set_zorder(40)
         fig.canvas.draw()
         bb = leg.get_window_extent()
@@ -154,7 +162,7 @@ def finish(fig, ax, extent, handles, title="Условные обозначен�
         (x0, y0), (x1, y1) = inv.transform([(bb.x0, bb.y0), (bb.x1, bb.y1)])
         pad = 0.008
         back = fig.add_artist(Rectangle((x0 - pad, y0 - pad), x1 - x0 + 2 * pad, y1 - y0 + 2 * pad,
-                             transform=fig.transFigure, facecolor=SURFACE, alpha=0.78, edgecolor="none",
+                             transform=fig.transFigure, facecolor=SURFACE, alpha=0.82, edgecolor="none",
                              zorder=39))
     else:
         fig.legend(handles=handles, loc="upper left", bbox_to_anchor=LEGEND_ANCHOR, frameon=False, fontsize=8,

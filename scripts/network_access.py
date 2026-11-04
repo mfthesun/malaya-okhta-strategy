@@ -100,8 +100,8 @@ def main():
     results["metro_800_share"] = round(float(100 * living_pts.within(z800).mean()), 1)
     print(f"метро: 400 м — {results['metro_400_share']} %, 800 м — {results['metro_800_share']} % жилых зданий")
 
-    json.dump(results, open(PROC / "network_access.json", "w", encoding="utf-8"),
-              ensure_ascii=False, indent=1)
+    (PROC / "network_access.json").write_text(
+        json.dumps(results, ensure_ascii=False, indent=1), encoding="utf-8")
     print("итоги:", json.dumps(results, ensure_ascii=False))
     return 0
 
