@@ -38,6 +38,9 @@ TITLE_WRAP, LABEL_WRAP = 34, 34
 ATTR_LOC = (0.995, 0.006)
 # Подложки Esri только без подписей: надписи на картах — наши и на русском.
 BASEMAPS = {
+    # публичный CartoDB Positron без подписей, @2x — двойное разрешение тайлов
+    "positron": (xyz.Esri.WorldGrayCanvas,
+                 "© Esri, World Gray Canvas; источники: Esri, HERE, Garmin, FAO, NOAA, USGS"),
     "relief": (xyz.Esri.WorldShadedRelief, "© Esri, World Shaded Relief; источник: Esri"),
     "imagery": (xyz.Esri.WorldImagery, "© Esri, World Imagery; источники: Esri, i-cubed, USDA, USGS, AEX, GeoEye, "
                                        "Getmapping, Aerogrid, IGN, IGP, UPR-EGP и сообщество пользователей ГИС"),
@@ -60,13 +63,20 @@ MAP_RECT_FULL = (0.0, 0.0, 1.0, 1.0)  # полнокадровое поле: и�
 def map_figure(full=False):
     """Рисунок стандартного размера; full=True — карта занимает весь кадр, легенда поверх."""
     fig = plt.figure(figsize=FIG_SIZE)
-    ax = fig.add_axes(MAP_RECT_FULL if full else MAP_RECT)
+    rect = MAP_RECT_FULL if full else MAP_RECT
+    ax = fig.add_axes(rect)
     ax.set_axis_off()
+    ax._maptools_rect = rect  # исходная рамка: geopandas-слои её искажают через aspect='equal'
     return fig, ax
 
 
 def set_extent(ax, x0, y0, x1, y1):
     """Охват карты, расширенный до пропорций поля: масштаб по осям одинаковый."""
+    # geopandas-слой ставит aspect='equal' и подгоняет рамку осей; вернуть исходную
+    # рамку и aspect до расчёта, иначе пропорция поля считается по искажённой рамке
+    if hasattr(ax, "_maptools_rect"):
+        ax.set_position(ax._maptools_rect)
+    ax.set_aspect("auto")
     fw, fh = ax.figure.get_size_inches()
     rect = ax.get_position()
     box = (rect.height * fh) / (rect.width * fw)
@@ -76,7 +86,6 @@ def set_extent(ax, x0, y0, x1, y1):
         h = w * box
     else:
         w = h / box
-    ax.set_aspect("auto")
     ax.set_xlim(cx_ - w / 2, cx_ + w / 2)
     ax.set_ylim(cy - h / 2, cy + h / 2)
 
@@ -113,16 +122,21 @@ def north_arrow(ax, crs=32636, loc=NORTH_LOC, size=0.07, fontsize=10):
             color=INK, path_effects=HALO, zorder=21)
 
 
-def basemap(ax, style="imagery", crs=32636, alpha=1.0):
-    """Подложка Esri под всеми слоями и её атрибуция в правом нижнем углу поля."""
+def basemap(ax, style="imagery", crs=32636, alpha=1.0, zoom=None):
+    """Подложка Esri под всеми слоями и её атрибуция в правом нижнем углу поля.
+
+    zoom=None — авто; принудительный зум выше авто даёт более чёткие тайлы.
+    """
     src, attribution = BASEMAPS[style]
-    cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10, reset_extent=True, alpha=alpha)
+    kw = {} if zoom is None else {"zoom": zoom}
+    cx.add_basemap(ax, crs=f"EPSG:{crs}", source=src, attribution=False, zorder=-10,
+                   reset_extent=True, alpha=alpha, **kw)
     ax.text(*ATTR_LOC, f"Подложка: {attribution}", transform=ax.transAxes, ha="right", va="bottom",
             fontsize=5.5, color=MUTED, path_effects=HALO, zorder=21, wrap=True)
 
 
 def finish(fig, ax, extent, handles, title="Условные обозначения", crs=32636, basemap_style="imagery",
-           basemap_alpha=1.0, legend_on_map=True):
+           basemap_alpha=1.0, legend_on_map=True, basemap_zoom=None):
     """Охват, подложка, указатель севера, линейка и легенда.
 
     legend_on_map=True: карта на весь кадр, легенда в правом НИЖНЕМ углу поля карты на
@@ -131,7 +145,7 @@ def finish(fig, ax, extent, handles, title="Условные обозначен�
     """
     set_extent(ax, *extent)
     keep_xlim, keep_ylim = ax.get_xlim(), ax.get_ylim()  # basemap(reset_extent=True) расширяет охват до тайлов
-    basemap(ax, basemap_style, crs, basemap_alpha)
+    basemap(ax, basemap_style, crs, basemap_alpha, zoom=basemap_zoom)
     ax.set_xlim(keep_xlim); ax.set_ylim(keep_ylim)
     for hd in handles:
         hd.set_label(_wrap(hd.get_label(), LABEL_WRAP))
